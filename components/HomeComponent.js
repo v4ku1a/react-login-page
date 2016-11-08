@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux'
 
 
-export default class HomeComponent extends React.Component {
+class HomeComponent extends React.Component {
  
   render() {
+    console.log(this.props.data);
+
     return (
       <div>
         Home!!!
@@ -11,3 +14,11 @@ export default class HomeComponent extends React.Component {
     );
   }
 }
+
+function select(state) {
+  return {
+    data: state
+  };
+}
+
+export default connect(select)(HomeComponent);
