@@ -19,7 +19,7 @@ render((
     <Router history={browserHistory}>
       <Route path="/" component={App} >
         <IndexRoute component={HomeComponent}/>
-        <Route path="login" component={LoginComponent}/>
+        <Route path="login" component={LoginComponent} />
         <Route path="forgot-password" component={ForgotPasswordComponent} />
       </Route>
     </Router>

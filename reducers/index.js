@@ -1,14 +1,18 @@
 import { LOGIN } from '../actions' 
  
-const data = {
-    Name: '',
+const defaultState = {
     loggedIn: false
 };
  
-export default function comments(state = data, action) { 
+export default function comments(state = defaultState, action) {
+
+  // console.log(state);
+
   switch (action.type) { 
     case LOGIN: 
-      return action.payload; // imagine we reduce something here
+      return Object.assign({}, action.payload, {
+        loggedIn: true,
+      })
     default: 
       return state 
   } 

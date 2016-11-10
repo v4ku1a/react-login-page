@@ -1,15 +1,18 @@
 import React from 'react';
-import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import { Link, browserHistory } from 'react-router'
+import { connect } from 'react-redux'
+import { userAuth } from '../actions'
 
+import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
+import CircularProgress from 'material-ui/CircularProgress';
 
 import * as EmailValidator from 'email-validator';
 import debounce from 'debounce';
 
 
-export default class LoginComponent extends React.Component {
+class LoginComponent extends React.Component {
 
   constructor(props) {
     super(props);
@@ -67,7 +70,9 @@ export default class LoginComponent extends React.Component {
 
   handleSubmit(event) {
     let formValid = true;    
+
     event.preventDefault();
+    this.setState({submitDisable: true});
 
     if( !this.validatePass(this.state.pass) ) {
       formValid = false;
@@ -78,15 +83,23 @@ export default class LoginComponent extends React.Component {
     }
 
     if(formValid) {
-      console.log('Email: ' + this.state.email);
-      console.log('Pass: '  + this.state.pass);
-      browserHistory.push('/');
+      // console.log('Email: ' + this.state.email);
+      // console.log('Pass: '  + this.state.pass);    
+      this.props.dispatch( userAuth({name: this.state.email}) );
     } else {
-      console.log('Form invalid');
+      // console.log('Form invalid');
+      this.setState({submitDisable: false});
     }
-  }  
+  }
+
+  componentWillReceiveProps(nextProps){
+    if(nextProps.data.loggedIn) {
+      browserHistory.push('/');
+    }    
+  }
 
   render() {
+   
     return (
       <div style={{maxWidth: '500px', margin: '0 auto', padding: '15px'}}>
         <Card>
@@ -107,13 +120,24 @@ export default class LoginComponent extends React.Component {
                 value={this.state.pass}
                 onChange={(e) => this.handlePassChange(e)} />
             
-              <RaisedButton label="Log in" primary={true} type="submit" />
+              <RaisedButton label="Log in" primary={true} disabled={this.state.submitDisable} type="submit" />
               <Link style={{float: 'right', marginTop: '18px'}} to="/forgot-password">Forgot password</Link>
             </form>
           </CardText>
         </Card>
+        <div hidden={!this.state.submitDisable} style={{marginTop: '30px', textAlign: 'center'}}>
+          <CircularProgress />
+        </div>
       </div>
     );
   }
 }
 
+
+function select(state) {
+  return {
+    data: state
+  };
+}
+
+export default connect(select)(LoginComponent);
