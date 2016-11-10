@@ -44,7 +44,7 @@ class LoginComponent extends React.Component {
     let isValid = true;
     let validationMsg = '';
 
-    if( typeof email !== 'string' || email.length === 0 ) {
+    if( !email.length ) {
       isValid = false;
       validationMsg = 'Please enter Email';
     }
@@ -74,22 +74,13 @@ class LoginComponent extends React.Component {
     event.preventDefault();
     this.setState({submitDisable: true});
 
-    if( !this.validatePass(this.state.pass) ) {
+    if( !this.validatePass(this.state.pass) || !this.validateEmail(this.state.email) ) {
       formValid = false;
     }
 
-    if( !this.validateEmail(this.state.email) ) {
-      formValid = false;
-    }
-
-    if(formValid) {
-      // console.log('Email: ' + this.state.email);
-      // console.log('Pass: '  + this.state.pass);    
-      this.props.dispatch( userAuth({name: this.state.email}) );
-    } else {
-      // console.log('Form invalid');
-      this.setState({submitDisable: false});
-    }
+    formValid 
+      ? this.props.dispatch( userAuth({name: this.state.email}) ) 
+      : this.setState({submitDisable: false});
   }
 
   componentWillReceiveProps(nextProps){
@@ -99,9 +90,15 @@ class LoginComponent extends React.Component {
   }
 
   render() {
+
+    let containerStyles = {
+      maxWidth: '500px',
+      margin: '0 auto',
+      padding: '15px'
+    }; 
    
     return (
-      <div style={{maxWidth: '500px', margin: '0 auto', padding: '15px'}}>
+      <div style={containerStyles}>
         <Card>
           <CardTitle style={{paddingBottom: '5px'}} title="Login..." />
           <CardText style={{paddingTop: 0}}>
